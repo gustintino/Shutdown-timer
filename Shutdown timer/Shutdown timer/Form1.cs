@@ -39,9 +39,12 @@ namespace Shutdown_timer
 
 
             //cause am idiot: https://stackoverflow.com/questions/5226688/numericupdown-mousewheel-event-increases-decimal-more-than-one-increment
+
             hours.Increment = 1m / SystemInformation.MouseWheelScrollLines;
             minutes.Increment = 1m / SystemInformation.MouseWheelScrollLines;
             seconds.Increment = 1m / SystemInformation.MouseWheelScrollLines;
+
+            comboBox1.SelectedIndex = 0;
         }
 
         private void button1_Click_1(object sender, EventArgs e)
@@ -50,7 +53,28 @@ namespace Shutdown_timer
             m = (int)minutes.Value;
             h = (int)hours.Value;
 
+            seconds.Enabled = false;
+            minutes.Enabled = false;
+            hours.Enabled = false;
+            comboBox1.Enabled = false;
+
             timer1.Start();
+
+            countdown_start.Visible = false;
+            countdown_stop.Visible = true;
+        }
+
+        private void countdown_stop_Click(object sender, EventArgs e)
+        {
+            timer1.Stop();
+
+            seconds.Enabled = true;
+            minutes.Enabled = true;
+            hours.Enabled = true;
+            comboBox1.Enabled = true;
+
+            countdown_stop.Visible = false;
+            countdown_start.Visible = true;
         }
 
         public void timer1_Tick(object sender, EventArgs e)
@@ -86,38 +110,22 @@ namespace Shutdown_timer
             if(h == 0 && m == 0 && s == 0)
             {
                 timer1.Stop();
-                System.Diagnostics.Process.Start("shutdown", "/s /t 0");
+
+                if (comboBox1.SelectedIndex == 0)
+                {
+                    System.Diagnostics.Process.Start("shutdown", "/s /t 0");
+                }
+                else if (comboBox1.SelectedIndex == 1)
+                {
+                    System.Diagnostics.Process.Start("shutdown", "/r /t 0");
+                }
+                else if (comboBox1.SelectedIndex == 2)
+                {
+                    Application.SetSuspendState(PowerState.Suspend, false, true);
+                }
             }
         }
 
-        private void hours_ValueChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label1_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void minutes_ValueChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label2_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void seconds_ValueChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label3_Click(object sender, EventArgs e)
-        {
-
-        }
+       
     }
 }
